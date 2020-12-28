@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<style>
+		.tdstyle {
+				border: 1px solid black;
+			}
+	</style>
+</head>
+<body>
+		<div id="prikaz">
+			<button onclick="prikaziPretplatnike()">Prikazi pretplatnike</button>
+		</div></br>
+
+			Id pretplatnika:<input id="pretplid" type="text">
+			<button id="btn" onclick="obrisiPretplatnika()">Obrisi pretplatnika</button>
+		
+	<script>
+		
+	function obrisiPretplatnika() {
+			
+		var inputPretplatnikId = document.getElementById("pretplid");
+			
+		var pretpl_Id = inputPretplatnikId.value.trim();
+			
+		axios.post("http://localhost:3000/pretplatnici_delete", {
+				pretpl_id: pretpl_Id
+		}, {withCredentials: true}).then((res) => {
+			if((res.data.data).toString() == "Morate se ulogovati!") {
+					alert("Morate se ulogovati!");
+					return;
+				}
+				if((res.data.data).toString() == "Samo admin moze da brise pretplatnike!") {
+					alert("Samo admin moze da brise pretplatnike!");
+					return;
+				}else {
+					alert("OK. Pretplatnik je izbrisan!");
+				}
+		}).catch(function(err) {
+							console.error(err);
+						});
+	}
+		
+	function prikaziPretplatnike() {
+			
+		var pretplatnici = document.getElementById("prikaz");
+		pretplatnici.innerHTML = "";
+		
+		axios.get("http://localhost:3000/pretplatnici", {
+			}).then((res) => {
+				for(var i = 0; i<res.data.data.length; i++) {
+					
+					pretplatnici.innerHTML += "</br></br> id: "+JSON.stringify(res.data.data[i].pretplatnik_id).replace(/"/g, "")+", username: "+
+					JSON.stringify(res.data.data[i].pretplatnik_username).replace(/"/g, "");
+					pretplatnici.classList.add("tdstyle");
+				}
+			});
+	}
+	
+	</script>
+</body>
+</html>

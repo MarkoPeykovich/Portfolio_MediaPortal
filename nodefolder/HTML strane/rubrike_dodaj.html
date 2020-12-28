@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<style>
+		.tdstyle {
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body onload="getUrednike()">
+	<div id="main">
+		<form method="POST" action="http://localhost:3000/rubrike">
+			<div>
+				<p>Naziv rubrike: <input type="text" name="naziv"></p>
+			</div>
+			<div>
+				<p>Id urednika: <input type="text" name="urednici_id"></p>
+			</div>
+			<input type="submit" value="Posalji rubriku u bazu">
+			<div>
+				<p>Postojeci urednici:</p>
+			</div>
+	</div>
+	
+	<script>
+	
+	var urednici_id = [];
+	
+	function getUrednike() {
+			axios.get("http://localhost:3000/urednici", {
+			}).then((res) => {
+				var main = document.getElementById("main");
+				var table = document.createElement("table");
+				var tr = document.createElement("tr");
+				
+				
+				for(var i = 0; i<res.data.data.length; i++) {
+					//main.innerHTML += JSON.stringify(res.data.data[i].urednik_id);
+					//urednici_id.push(res.data.data[i].urednik_id);
+					var td = document.createElement("td");
+					td.innerHTML = "id: "+JSON.stringify(res.data.data[i].urednik_id).replace(/"/g, "")+" - "+
+					JSON.stringify(res.data.data[i].urednik_ime).replace(/"/g, "")+" "+
+					JSON.stringify(res.data.data[i].urednik_prezime).replace(/"/g, "");
+					td.classList.add("tdstyle");
+					tr.appendChild(td);
+				}
+				
+				table.appendChild(tr);
+				main.appendChild(table);
+			});
+		}
+	
+	//console.log(urednici_id);
+	
+	</script>
+</body>
+</html>

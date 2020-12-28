@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<style>
+	.tdstyle {
+			border: 1px solid black;
+		}
+	.txtstyle {
+			border: 1px solid black;
+			width: 200px;
+			height: 200px;
+		}
+	.hidden {
+		display: none;
+	}
+	</style>
+</head>
+<body onload="getVesti()">
+	<div id="main">
+
+	</div>	
+	<script>
+		var array = [];
+		function getVesti() {
+			axios.get("http://localhost:3000/vesti", {
+			}).then((res) => {
+				var main = document.createElement("div");
+				
+				for(var i = 0; i<res.data.data.length; i++) {
+					var divVest = document.createElement("div");
+					
+					divVest.innerHTML = /*"id: "+JSON.stringify(res.data.data[i].vest_id).replace(/"/g, "")+*/"Naslov vesti: "+
+					JSON.stringify(res.data.data[i].vest_naziv).replace(/"/g, "")+"</br></br> Datum vesti: "+
+					JSON.stringify(res.data.data[i].vest_datum.replace('.000Z', '  ').replace('T', '  ')).replace(/"/g, "");//+"</br></br> Tekst vesti: "+
+					//JSON.stringify(res.data.data[i].vest_text).replace(/"/g, "");
+					divVest.classList.add("tdstyle");
+					
+					var inputId = document.createElement("input");
+					inputId.setAttribute('type','hidden');
+					inputId.setAttribute('name','vest_id');
+					inputId.setAttribute('class','input');
+					inputId.setAttribute('value',res.data.data[i].vest_id);
+					
+					var divText = document.createElement("div");
+					divText.setAttribute("id","divText"+i);
+					var textArea = document.createElement("textarea");
+					textArea.classList.add("txtstyle");
+					textArea.setAttribute('cols',100);
+					textArea.setAttribute('rows', 10);
+					textArea.setAttribute('name', 'text');
+					textArea.setAttribute("class", "textat");
+					textArea.innerText = JSON.stringify(res.data.data[i].vest_text).replace(/"/g, "");
+					var message = textArea.innerText;
+					
+					console.log(message);
+					console.log(inputId.value);
+					
+					var button = document.createElement("button");
+					button.innerHTML = "Posalji update vesti";
+					button.setAttribute("class","btn");
+					
+					divText.appendChild(inputId);
+					divText.appendChild(textArea);
+					divText.appendChild(button);
+					
+					main.appendChild(divVest);
+					main.appendChild(divText);
+					main.innerHTML += "</br></br></br>"
+				}
+				
+				document.body.appendChild(main);
+				
+					/*$(document).on("click", ".btn", function() {
+						message = $(this).prev().val();
+						id = $(this).parent().find(".input").val();
+						console.log(message);
+						console.log(id);
+						
+						axios.put("http://localhost:3000/vesti", {
+							vest_text: message,
+							vest_id: id
+						}, {withCredentials: true}).then((res) => {
+							console.log("OK");
+						}).catch(function(err) {
+							console.error(err);
+						});
+				    });*/
+		    });
+			
+			$(document).on("click", ".btn", function() {
+						message = $(this).prev().val();
+						id = $(this).parent().find(".input").val();
+						console.log(message);
+						console.log(id);
+						
+						axios.put("http://localhost:3000/vesti", {
+							vest_text: message,
+							vest_id: id
+						}, {withCredentials: true}).then((res) => {
+							console.log("OK");
+							//main.innerHTML = "";
+							//main.innerHTML = (res.data.data).toString();
+							//var divtext = $(this).parent();
+							//console.log(divtext);
+							if((res.data.data).toString() == "Morate se ulogovati!") {
+								alert("Morate se ulogovati!");
+								return;
+							}
+							if((res.data.data).toString() == "Samo admin moze da apdejtuje vesti!") {
+								alert("Samo admin moze da apdejtuje vesti!");
+								return;
+							}else {
+								alert("OK. Vest je apdejtovana!");
+							}
+							//divtext.insertAdjacentHTML("afterend", JSON.stringify(res.data.data));
+							//divtext.innerHTML = JSON.stringify(res.data.data); 
+							
+						}).catch(function(err) {
+							console.error(err);
+						});
+				    });
+					
+					
+	}
+	
+	</script>
+</body>
+</html>

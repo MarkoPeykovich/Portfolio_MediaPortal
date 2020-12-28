@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<style>
+		.tdstyle {
+				border: 1px solid black;
+			}
+	</style>
+</head>
+<body>
+		<div id="prikazUre">
+			<button onclick="prikaziUrednike()">Prikazi urednike</button>
+		</div></br>
+		<div id="prikazRub">
+			<button onclick="prikaziRubrike()">Prikazi rubrike bez urednika</button>
+		</div></br>
+		
+			Id urednika:<input id="uredid" type="text">
+			Id rubrike:<input id="rubrid" type="text">
+			<button id="btn" onclick="povezi_Urednika_i_Rubirku()">Povezi urednika i rubriku</button>
+		
+	<script>
+		
+	function povezi_Urednika_i_Rubirku() {
+			
+		var inputUrId = document.getElementById("uredid");
+		var inputRuId = document.getElementById("rubrid");
+			
+		var ured_Id = inputUrId.value.trim();
+		var rubr_Id = inputRuId.value.trim();
+			
+		axios.post("http://localhost:3000/ured_rubr", {
+				ured_id: ured_Id,
+				rubr_id: rubr_Id
+		}, {withCredentials: true}).then((res) => {
+			if((res.data.data).toString() == "Morate se ulogovati!") {
+					alert("Morate se ulogovati!");
+					return;
+				}
+				if((res.data.data).toString() == "Samo admin moze da povezuje urednike i rubrike!") {
+					alert("Samo admin moze da povezuje urednike i rubrike!");
+					return;
+				}
+				if((res.data.data).toString() == "Rubrika vec ima urednika!") {
+					alert("Rubrika vec ima urednika!");
+					return;
+				}
+				else {
+					alert("OK. Rubrika je dobila novog urednika");
+				}
+		}).catch(function(err) {
+							console.error(err);
+						});
+	}
+	
+	function prikaziUrednike() {
+			
+		var urednici = document.getElementById("prikazUre");
+		urednici.innerHTML = "";
+		
+		axios.get("http://localhost:3000/urednici", {
+			}).then((res) => {
+				for(var i = 0; i<res.data.data.length; i++) {
+					
+					urednici.innerHTML += "</br></br> id: "+JSON.stringify(res.data.data[i].urednik_id).replace(/"/g, "")+", ime: "+
+					JSON.stringify(res.data.data[i].urednik_ime).replace(/"/g, "")+", prezime: "+
+					JSON.stringify(res.data.data[i].urednik_prezime).replace(/"/g, "");
+					urednici.classList.add("tdstyle");
+				}
+			});
+	}
+	
+	function prikaziRubrike() {
+			
+		var rubrike = document.getElementById("prikazRub");
+		rubrike.innerHTML = "";
+		
+		axios.get("http://localhost:3000/ured_rubr", {
+			}).then((res) => {
+				/*for(var i = 0; i<res.data.data.length; i++) {
+					
+					rubrike.innerHTML += "</br></br> id: "+JSON.stringify(res.data.data[i].rubrika_id).replace(/"/g, "")+", naziv rubrike: "+
+					JSON.stringify(res.data.data[i].rubrika_naziv).replace(/"/g, "");
+					rubrike.classList.add("tdstyle");
+				}*/
+				//rubrike.innerHTML += JSON.stringify(res.data.data);
+				for(var i = 0; i<res.data.data.length; i++) {
+					
+					rubrike.innerHTML += "</br></br> id: "+JSON.stringify(res.data.data[i].rubrika_id).replace(/"/g, "")+", naziv rubrike: "+
+					JSON.stringify(res.data.data[i].rubrika_naziv).replace(/"/g, "");
+					rubrike.classList.add("tdstyle");
+				}
+			});
+	}
+	
+	</script>
+</body>
+</html>

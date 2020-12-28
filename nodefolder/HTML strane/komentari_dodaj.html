@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<style>
+	.tdstyle {
+			border: 1px solid black;
+		}
+	.txtstyle {
+			border: 1px solid black;
+			width: 200px;
+			height: 200px;
+		}
+	.hidden {
+		display: none;
+	}
+	</style>
+</head>
+<body onload="getVesti()">
+	<div id="main">
+		<!--form method="POST" action="http://localhost:3000/komentari"-->
+			<!--div>
+				<p>Tekst komentara: </p>
+				<textarea rows="10" cols="100" name="text"></textarea>
+			</div>
+			<div>
+				<p>Id vesti: <input type="text" name="vest_id"></p>
+			</div>
+			<div>
+				<p>Id pretplatnika: <input type="text" name="pretpl_id"></p>
+			</div-->
+			<!--input type="submit" value="Posalji komentar"-->
+	</div>	
+	<script>
+		function getVesti() {
+			axios.get("http://localhost:3000/vesti", {
+			}).then((res) => {
+				/*var main = document.getElementById("main");
+				var table = document.createElement("table");
+				var tr = document.createElement("tr");
+				var textArea = document.createElement("textarea");*/
+				var main = document.getElementById("main");	
+				
+				for(var i = 0; i<res.data.data.length; i++) {
+					//main.innerHTML += JSON.stringify(res.data.data[i].urednik_id);
+					//urednici_id.push(res.data.data[i].urednik_id);
+					//var td = document.createElement("td");
+					var divVest = document.createElement("div");
+					
+					divVest.innerHTML = /*"id: "+JSON.stringify(res.data.data[i].vest_id).replace(/"/g, "")+*/"Naslov vesti: "+
+					JSON.stringify(res.data.data[i].vest_naziv).replace(/"/g, "")+"</br></br> Datum vesti: "+
+					JSON.stringify(res.data.data[i].vest_datum.replace('.000Z', '  ').replace('T', '  ')).replace(/"/g, "")+"</br></br> Tekst vesti: "+
+					JSON.stringify(res.data.data[i].vest_text).replace(/"/g, "");
+					//td.classList.add("tdstyle");
+					divVest.classList.add("tdstyle");
+					
+					var form = document.createElement("form");
+					form.method = "post";
+					form.action = "http://localhost:3000/komentari";
+					
+					var divText = document.createElement("div");
+					var textArea = document.createElement("textarea");
+					textArea.classList.add("txtstyle");
+					textArea.setAttribute('cols',100);
+					textArea.setAttribute('rows', 10);
+					textArea.setAttribute('name', 'text');
+					divText.appendChild(textArea);
+					
+					var divId = document.createElement("div");
+					divId.classList.add("hidden");
+					var inputId = document.createElement("input");
+					inputId.setAttribute('type','text');
+					inputId.setAttribute('name','vest_id');
+					inputId.setAttribute('value',res.data.data[i].vest_id);
+					
+					divId.appendChild(inputId);
+					
+					var input = document.createElement("input");
+					input.setAttribute("type", "submit");
+					input.setAttribute("value", "Posalji komentar");
+					//input.appendChild(divText);
+					
+					form.appendChild(divId);
+					form.appendChild(divText);
+					form.appendChild(input);
+					
+					//tr.appendChild(td);
+					main.appendChild(divVest);
+					main.appendChild(form);
+					main.innerHTML += "</br></br></br>"
+				}
+				//table.appendChild(tr);
+				
+			});
+		}
+	</script>
+</body>
+</html>

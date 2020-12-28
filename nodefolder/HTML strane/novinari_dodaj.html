@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<style>
+		.tdstyle {
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body onload="getNovinare()">
+	<div id="main">
+		<form method="POST" action="http://localhost:3000/novinari">
+			<div>
+				<p>Ime novinara: <input type="text" name="ime"></p>
+			</div>
+			<div>
+				<p>Prezime novinara: <input type="text" name="prezime"></p>
+			</div>
+			<div>
+				<p>Godiste novinara: <input type="text" name="godiste"></p>
+			</div>
+			<input type="submit" value="Dodaj novinara u bazu">
+			<div>
+				<p>Postojeci novinari:</p>
+			</div>
+	</div>
+	<script>
+		function getNovinare() {
+			axios.get("http://localhost:3000/novinari", {
+			}).then((res) => {
+				var main = document.getElementById("main");
+				var table = document.createElement("table");
+				var tr = document.createElement("tr");
+				
+				for(var i = 0; i<res.data.data.length; i++) {
+					//main.innerHTML += JSON.stringify(res.data.data[i].urednik_id);
+					//urednici_id.push(res.data.data[i].urednik_id);
+					var td = document.createElement("td");
+					td.innerHTML = "id: "+JSON.stringify(res.data.data[i].novinar_id).replace(/"/g, "")+" - "+
+					JSON.stringify(res.data.data[i].novinar_ime).replace(/"/g, "")+" "+
+					JSON.stringify(res.data.data[i].novinar_prezime).replace(/"/g, "");
+					td.classList.add("tdstyle");
+					tr.appendChild(td);
+				}
+				table.appendChild(tr);
+				main.appendChild(table);
+			});
+		}
+	</script>
+</body>
+</html>

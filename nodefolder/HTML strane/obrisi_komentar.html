@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<style>
+		.tdstyle {
+				border: 1px solid black;
+			}
+	</style>
+</head>
+<body>
+		<div id="prikaz">
+			<button onclick="prikaziVestiKomentare()">Prikazi komentare</button>
+		</div></br>
+			Id komentara:<input id="komid" type="text">
+			<button id="btn" onclick="obrisiKomentar()">Obrisi komentar</button>
+		
+		
+	<script>
+		
+	function obrisiKomentar() {
+			
+		var inputKomentarId = document.getElementById("komid");
+			
+		var kom_Id = inputKomentarId.value.trim();
+			
+		axios.post("http://localhost:3000/komentari_delete", {
+				kom_id: kom_Id
+		}, {withCredentials: true}).then((res) => {
+			if((res.data.data).toString() == "Morate se ulogovati!") {
+					alert("Morate se ulogovati!");
+					return;
+				}
+				if((res.data.data).toString() == "Samo admin moze da brise komentare!") {
+					alert("Samo admin moze da brise komentare!");
+					return;
+				}else {
+					alert("OK. Komentar je izbrisan!");
+				}
+		}).catch(function(err) {
+							console.error(err);
+						});
+	}
+		
+	function prikaziVestiKomentare() {
+			
+		var vestiKomentari = document.getElementById("prikaz");
+		vestiKomentari.innerHTML = "";
+		
+		axios.get("http://localhost:3000/vesti_komentari", {
+			}).then((res) => {
+				for(var i = 0; i<res.data.data.length; i++) {
+					
+					vestiKomentari.innerHTML += "</br></br>naziv vesti: "+JSON.stringify(res.data.data[i].vest_naziv).replace(/"/g, "")+"</br>text vesti: "+
+					JSON.stringify(res.data.data[i].vest_text).replace(/"/g, "")+"</br>id komentara: "+
+					JSON.stringify(res.data.data[i].koment_id).replace(/"/g, "")+"</br>komentar: "+
+					JSON.stringify(res.data.data[i].koment_text).replace(/"/g, "")+"</br></br>";
+					vestiKomentari.classList.add("tdstyle");
+				}
+			});
+	}
+	
+	</script>
+</body>
+</html>

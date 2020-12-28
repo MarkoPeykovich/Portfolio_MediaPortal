@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<!--script src = "https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<style>
+		.tdstyle {
+				border: 1px solid black;
+			}
+	</style>
+</head>
+<body>
+		<div id="prikaz">
+			<button onclick="prikaziUrednike()">Prikazi urednike</button>
+		</div></br>
+		<!--div id="brisanje"-->
+		<!--form method="POST" action="http://localhost:3000/urednici_delete">
+			<input id="uredid" type="text" name="ured_id">
+			<input type="submit" value="Izbrisi urednika"-->
+			<input id="uredid" type="text">
+			<button id="btn" onclick="obrisiUrednika()">Obrisi urednika</button>
+		<!--/div-->
+		
+	<script>
+		
+	function obrisiUrednika() {
+			
+		var inputUrednikId = document.getElementById("uredid");
+			
+		var ured_Id = inputUrednikId.value.trim();
+			
+		axios.post("http://localhost:3000/urednici_delete", {
+				ured_id: ured_Id
+		}, {withCredentials: true}).then((res) => {
+			if((res.data.data).toString() == "Morate se ulogovati!") {
+					alert("Morate se ulogovati!");
+					return;
+				}
+				if((res.data.data).toString() == "Samo admin moze da brise urednike!") {
+					alert("Samo admin moze da brise urednike!");
+					return;
+				}else {
+					alert("OK. Urednik je izbrisan!");
+				}
+		}).catch(function(err) {
+							console.error(err);
+						});
+	}
+		
+	function prikaziUrednike() {
+			
+		var rubrike = document.getElementById("prikaz");
+		rubrike.innerHTML = "";
+		
+		axios.get("http://localhost:3000/urednici", {
+			}).then((res) => {
+				for(var i = 0; i<res.data.data.length; i++) {
+					
+					rubrike.innerHTML += "</br></br> id: "+JSON.stringify(res.data.data[i].urednik_id).replace(/"/g, "")+", ime: "+
+					JSON.stringify(res.data.data[i].urednik_ime).replace(/"/g, "")+", prezime: "+
+					JSON.stringify(res.data.data[i].urednik_prezime).replace(/"/g, "");
+					rubrike.classList.add("tdstyle");
+				}
+			});
+	}
+	
+	/*$(document).on("click", "#btn", function() {
+						message = $(this).prev().val();
+						id = $(this).parent().find(".input").val();
+						console.log(message);
+						console.log(id);
+						
+						axios.delete("http://localhost:3000/rubrike", {
+							vest_text: message,
+							vest_id: id
+						}, {withCredentials: true}).then((res) => {
+							console.log("OK");
+						}).catch(function(err) {
+							console.error(err);
+						});
+				    });*/
+	
+	</script>
+</body>
+</html>

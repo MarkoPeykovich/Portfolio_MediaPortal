@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<style>
+		.tdstyle {
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body onload="getNovinare(), getRubrike()">
+	<div id="main">
+	<form method="POST" action="http://localhost:3000/vesti">
+		<div>
+			<p>Naziv vesti: <input type="text" name="naziv"></p>
+		</div>
+		<div>
+			<p>Id rubrike: <input type="text" name="rubrika_id"></p>
+		</div>
+		<div>
+			<p>Id novinara koji je napisao vest: <input type="text" name="novinar_id"></p>
+		</div>
+		<textarea rows="10" cols="100" name="text"></textarea>
+		<input type="submit" value="Posalji vest u bazu">
+		<div>
+			<p>Postojeci novinari (prvi red) i postojece rubrike (drugi red):</p>
+		</div>
+	</div>
+	
+	<script>
+		function getNovinare() {
+			axios.get("http://localhost:3000/novinari", {
+			}).then((res) => {
+				var main = document.getElementById("main");
+				var table = document.createElement("table");
+				var tr = document.createElement("tr");
+				
+				for(var i = 0; i<res.data.data.length; i++) {
+					//main.innerHTML += JSON.stringify(res.data.data[i].urednik_id);
+					//urednici_id.push(res.data.data[i].urednik_id);
+					var td = document.createElement("td");
+					td.innerHTML = "id: "+JSON.stringify(res.data.data[i].novinar_id).replace(/"/g, "")+" - "+
+					JSON.stringify(res.data.data[i].novinar_ime).replace(/"/g, "")+" "+
+					JSON.stringify(res.data.data[i].novinar_prezime).replace(/"/g, "");
+					td.classList.add("tdstyle");
+					tr.appendChild(td);
+				}
+				table.appendChild(tr);
+				main.appendChild(table);
+			});
+		}
+		
+		function getRubrike() {
+			axios.get("http://localhost:3000/rubrike", {
+			}).then((res) => {
+				var main = document.getElementById("main");
+				var table = document.createElement("table");
+				var tr = document.createElement("tr");
+				
+				
+				for(var i = 0; i<res.data.data.length; i++) {
+					//main.innerHTML += JSON.stringify(res.data.data[i].urednik_id);
+					//urednici_id.push(res.data.data[i].urednik_id);
+					var td = document.createElement("td");
+					td.innerHTML = "id: "+JSON.stringify(res.data.data[i].rubrika_id).replace(/"/g, "")+" - "+
+					JSON.stringify(res.data.data[i].rubrika_naziv).replace(/"/g, "");
+					td.classList.add("tdstyle");
+					tr.appendChild(td);
+				}
+				
+				table.appendChild(tr);
+				main.appendChild(table);
+			});
+		}
+	</script>
+</body>
+</html>
