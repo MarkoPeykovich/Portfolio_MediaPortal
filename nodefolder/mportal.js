@@ -57,15 +57,6 @@ app.use(session({
 	}
 }));
 
-//app.use((req, res, next) => {
-	//const { user_id } = req.session;
-	//if(user_id) {
-			//res.locals.user = users.find(user => users[0].pretplatnik_id === user_id);
-			//res.locals.user = users.find(user => user.pretplatnik_id === user_id);
-		//}
-	//next();
-//});
-
 app.get("/", function(req,res) {
 	
 		if(!req.session.user) {
@@ -393,14 +384,14 @@ app.get("/ured_rubr", function(req,res) {
 		con.query("SELECT rubrike_rubrika_id from ured_rubr", function(err,result,field) {
 			if(err) throw err;
 			for(var i = 0; i<result.length; i++) {
-				niz.push(JSON.parse(JSON.stringify(result[i].rubrike_rubrika_id)));
+				niz.push(result[i].rubrike_rubrika_id);
 			}
 	    });
 		
 		con.query("SELECT rubrika_id from rubrike", function(err,result,field) {
 			if(err) throw err;
 			for(var i = 0; i<result.length; i++) {
-				niz1.push(JSON.parse(JSON.stringify(result[i].rubrika_id)));
+				niz1.push(result[i].rubrika_id);
 			}
 			for(var i = 0; i<niz1.length; i++) {
 					if(niz.indexOf(niz1[i]) == -1) {
