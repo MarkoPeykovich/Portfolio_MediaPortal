@@ -204,11 +204,12 @@ export default {
               return;
             }
 
-            //RowDataPacket svih vesti (sa komentarima + bez komentara) ->
+            //sve vesti (sa komentarima + bez komentara) ->
             //pretvaramo u niz[] i sortiramo niz[] ->
             //u skladu sa id svih vesti od najmanjeg id ka najvecem id
 
-            var niz = JSON.parse(JSON.stringify(response.data.data));
+            //var niz = JSON.parse(JSON.stringify(response.data.data));
+            var niz = response.data.data;
             niz.sort((a,b) => a.vest_id - b.vest_id);
 
             //ako vest nema komentar (ne nalazi se u niz0) ubaci je u ->
