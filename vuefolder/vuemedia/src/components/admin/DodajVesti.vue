@@ -67,10 +67,10 @@ export default {
     },
     methods: {
         getNovin() {
-            axios.get("http://localhost:3000/novinari", {
+            axios.get("http://localhost:3000/novinari", {//get all the journalists
 
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
@@ -79,35 +79,35 @@ export default {
             });
         },
         getRubr() {
-            axios.get("http://localhost:3000/rubrike", {
+            axios.get("http://localhost:3000/rubrike", {//get all the rubrics
 
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     return;
                 }
                 this.rubrike = res.data.data;
             });
         },
         dodajVest() {
-             axios.post("http://localhost:3000/vesti", {
+             axios.post("http://localhost:3000/vesti", {//add new news
                  naziv: this.title,
                  rubrika_id: this.idrubr,
                  novinar_id: this.idnov,
                  text: this.textvesti   
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
                 }
-                if(res.data.data == "ERROR, naziv, rubrika_id, novinar_id and text are required!") {
+                if(res.data.data == "ERROR, naziv, rubrika_id, novinar_id and text are required!") {//headline, rubric_id, journalist_id and text required
                     	alert("Morate uneti i naziv vesti i id rubrike i id novinara i tekst vesti!");
                 }
-                if(res.data.data == "Vec postoji vest sa tim nazivom!") {
+                if(res.data.data == "Vec postoji vest sa tim nazivom!") {//a news with such a headline already exists
                     	alert("Vec postoji vest sa tim nazivom!");
                 }
                 if(res.data.data == "OK") {
-                    	alert("Vest je uspesno dodata u bazu.");
+                    	alert("Vest je uspesno dodata u bazu.");//news successfully added to database
                 }
                 this.$emit("changeK5");
                 this.currentRoute;
