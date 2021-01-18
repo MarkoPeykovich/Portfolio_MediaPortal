@@ -44,10 +44,10 @@ export default {
     },
     methods: {
         getVesti() {
-            axios.get("http://localhost:3000/vesti", {
+            axios.get("http://localhost:3000/vesti", {//get all the news
 
           }).then((res) => {
-            if(res.data.data == "Morate se ulogovati!") {
+            if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                 this.$store.commit('doLogout');
                 this.$router.replace('/');
                 return;
@@ -56,19 +56,19 @@ export default {
           });
         },
         sendUpdate(id) {
-            axios.put("http://localhost:3000/vesti", {
+            axios.put("http://localhost:3000/vesti", {//update the news
                 vest_text: this.update,
                 vest_id: id
             }, {withCredentials: true}).then((res) => {
-               if(res.data.data == "Morate se ulogovati!") {
+               if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
                }
-               if(res.data.data == "ERROR, vest_text is required!") {
+               if(res.data.data == "ERROR, vest_text is required!") {//news_text is required
                    alert("Morate uneti apdejtovan text vesti!");
                }
-               if(res.data.data == "OK. Vest updated.") {
+               if(res.data.data == "OK. Vest updated.") {//news is updated
                    alert("Ok. Vest je apdejtovana.");
                }
                this.$emit("changeK6");
