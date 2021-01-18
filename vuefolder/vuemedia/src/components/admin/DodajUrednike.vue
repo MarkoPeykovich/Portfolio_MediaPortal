@@ -41,10 +41,10 @@ export default {
     },
     methods: {
          getUrednike() {
-            axios.get("http://localhost:3000/urednici", {
+            axios.get("http://localhost:3000/urednici", {//get all the editors
 
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
@@ -53,16 +53,16 @@ export default {
             });
         },
         dodajUrednika() {
-             axios.post("http://localhost:3000/urednici", {
+             axios.post("http://localhost:3000/urednici", {//send new editor
                  ime: this.name,
                  prezime: this.surname
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
                 }
-                if(res.data.data == "ERROR, ime and prezime are required!") {
+                if(res.data.data == "ERROR, ime and prezime are required!") {//editor name and surname required
                     	alert("Greska, morate uneti i ime i prezime!");
                 }
                 this.$emit("changeK2");
