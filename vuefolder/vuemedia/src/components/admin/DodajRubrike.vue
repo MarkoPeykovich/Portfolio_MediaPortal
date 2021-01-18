@@ -50,10 +50,10 @@ export default {
     },
     methods: {
         getUrednike() {
-            axios.get("http://localhost:3000/urednici", {
+            axios.get("http://localhost:3000/urednici", {//get all the editors
 
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
@@ -62,29 +62,29 @@ export default {
             });
         },
         getRubrike() {
-            axios.get("http://localhost:3000/rubrike", {
+            axios.get("http://localhost:3000/rubrike", {//get all the rubrics
 
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     return;
                 }
                 this.sveRubrike = res.data.data;
             });
         },
         dodajRubriku() {
-             axios.post("http://localhost:3000/rubrike", {
+             axios.post("http://localhost:3000/rubrike", {//send new rubric
                  naziv: this.name,
                  urednici_id: this.id
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
                 }
-                if(res.data.data == "Vec postoji rubrika sa tim imenom!") {
+                if(res.data.data == "Vec postoji rubrika sa tim imenom!") {//the rubric with such a name already exists
                     	alert("Vec postoji rubrika sa tim imenom!");
                 }
-                if(res.data.data == "ERROR, naziv and urednici are required!") {
+                if(res.data.data == "ERROR, naziv and urednici are required!") {//rubric name and editor(s) required
                     	alert("Morate uneti i naziv rubrike i id urednika!");
                 }
                 this.$emit("changeK3");
