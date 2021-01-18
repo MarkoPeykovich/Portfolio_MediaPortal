@@ -51,7 +51,7 @@ export default {
     },
     methods: {
         getNovinare() {
-            axios.get("http://localhost:3000/novinari", {
+            axios.get("http://localhost:3000/novinari", {//get all the journalists
 
             }).then((res) => {
                 if(res.data.data == "Morate se ulogovati!") {
@@ -63,17 +63,17 @@ export default {
             });
         },
         dodajNovinara() {
-             axios.post("http://localhost:3000/novinari", {
+             axios.post("http://localhost:3000/novinari", {//add new journalist
                  ime: this.name,
                  prezime: this.surname,
-                 godiste: this.year 
+                 godiste: this.year //birthyear
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
                 }
-                if(res.data.data == "ERROR, ime, prezime and godiste are required!") {
+                if(res.data.data == "ERROR, ime, prezime and godiste are required!") {//name,surname,birthyear required
                     	alert("Greska, morate uneti i ime i prezime i godiste!");
                 }
                 this.$emit("changeK1");
