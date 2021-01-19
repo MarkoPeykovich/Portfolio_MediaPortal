@@ -36,10 +36,10 @@ export default {
     },
     methods: {
         getRubrike() {
-            axios.get("http://localhost:3000/rubrike", {
+            axios.get("http://localhost:3000/rubrike", {//get all the rubrics
 
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
@@ -48,15 +48,15 @@ export default {
             });
         },
         obrisiRubriku() {
-            axios.post("http://localhost:3000/rubrike_delete", {
+            axios.post("http://localhost:3000/rubrike_delete", {//delete chosen rubric
                  rubrika_id: this.rubid   
             }).then((res) => {
-                 if(res.data.data == "Morate se ulogovati!") {
+                 if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
                 }
-                if(res.data.data == "OK. Rubrika izbrisana!") {
+                if(res.data.data == "OK. Rubrika izbrisana!") {//"Ok. The rubric is deleted!"
                     alert("OK. Rubrika izbrisana!");
                 }
                 this.$emit("changeK11");
