@@ -76,32 +76,32 @@ export default {
     },
     methods: {
         getKomentare() {
-            axios.get("http://localhost:3000/vesti_komentari", {
+            axios.get("http://localhost:3000/vesti_komentari", {//get news that have comments
 
             }).then((res) => {
 
-                 if(res.data.data == "Morate se ulogovati!") {
+                 if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
                 }
-                if(res.data.data == "Nema nijedne vesti sa komentarom!") {
+                if(res.data.data == "Nema nijedne vesti sa komentarom!") {//"There are no news with comment(s)!"
                     alert("Nema nijedne vesti sa komentarom!");
                     return;
                 }
 
             var niz = res.data.data;
-            var double = [];//double je niz od id vesti koje imaju vise komentara
+            var double = [];//double is an array of all the news_id with multiple comments
 
-            //ObrisiKomentar.vue prikazuje dve celine: -> 
-            //vesti sa vise komentara (nizIstihId[]) i vesti sa jednim komentarom (nizRaznihId[])
+            //ObrisiKomentar.vue has two parts: -> 
+            //news with multiple comments (nizIstihId[]) and news with one comment (nizRaznihId[])
 
             if(niz.length>1) {
-            //sortiramo var niz u skladu sa id svih vesti od najmanjeg id ka najvecem id
-            niz.sort((a,b) => a.vest_id - b.vest_id);
+            
+            niz.sort((a,b) => a.vest_id - b.vest_id);//sort niz[] in ascending order according to the news_id
 
             for(var i = 0; i<niz.length-1; i++) {
-            var nizIJ = [];//nizIJ skuplja sve komentare na datu vest sem prvog komentara
+            var nizIJ = [];//array nizIJ collects all the comments of the respetive news (except the first comment inside niz[])
             if(niz[i].vest_id !== niz[i+1].vest_id) {continue;}
             double.push(niz[i].vest_id);
             for(var j = i+1; j<niz.length; j++) {
@@ -109,20 +109,20 @@ export default {
                 nizIJ.push({"kom_text": niz[j].koment_text, "kom_id": niz[j].koment_id});
                 }
             }
-            //dodajemo prvi komentar date vesti na [0] od nizIJ
-            nizIJ.unshift({"kom_text": niz[i].koment_text, "kom_id": niz[i].koment_id});
+            
+            nizIJ.unshift({"kom_text": niz[i].koment_text, "kom_id": niz[i].koment_id});//put the first comment of the respective news to the nizIJ[0]
 
             var bool = this.nizIstihId.find(o => o.vest_naziv == niz[i].vest_naziv);
             if(bool == undefined) {
-            //ukoliko naziv date vesti vec nije u nizu vesti sa vise komentara (nizIstihId[]), -> 
-            //dodaj takvu vest sa id,nazivom, textom vesti i nizom svih njenih komentara (nizIJ) u nizIstihId[]
+            //if the headline of the respective news is not already present in the news array with multiple comments nizIstihId[], -> 
+            //push such news with its id, headline, text and array of all its comments nizIJ[] inside nizIstihId[]
                     this.nizIstihId.push({"vest_naziv": niz[i].vest_naziv, "vest_id": niz[i].vest_id, "vest_text": niz[i].vest_text, "komentari": nizIJ});
                 }
             }
             
-            //ukoliko vest nema id u double[] i razlicita je od ->
-            //prve vesti niza (niz[i(=0 zbog break kasnije u petlji)].vest_id), ->
-            //tj. ako ima jedan komentar, dodaj je u nizRaznihId[] 
+            //if the news is without id inside double[] and is different from ->
+            //the first news of the array (niz[i=0 because of break later in the loop].vest_id), ->
+            //i.e. if the news has only one comment, push it inside nizRaznihId[]
             for(var i = 0; i<niz.length-1; i++) {
                 for(var j = i+1; j<niz.length; j++) {
                     if(niz[i].vest_id != niz[j].vest_id) {
@@ -131,27 +131,27 @@ export default {
                         }
                     }
                 }
-                if(double.indexOf(niz[i].vest_id) == -1) {//dodaj prvu vest niza u nizRaznihId[], ako nema id u double[]
+                if(double.indexOf(niz[i].vest_id) == -1) {//push the first news of the array niz[] inside nizRaznihId[], if id of such news is not inside double[]
                     this.nizRaznihId.unshift({"vest_naziv": niz[i].vest_naziv, "vest_id": niz[i].vest_id, "vest_text": niz[i].vest_text, "komentar": niz[i].koment_text, "komentar_id": niz[i].koment_id});
                 }
                 break;
                 }
             }
-            if(niz.length==1) {//ako vesti_komentari daju samo jednu vest (niz.length==1), stavi tu vest u nizRaznihId[]
+            if(niz.length==1) {//if we retrieve from vesti_komentari only one news (niz.length==1), push such news inside nizRaznihId[0]
                 this.nizRaznihId.push({"vest_naziv": niz[0].vest_naziv, "vest_id": niz[0].vest_id, "vest_text": niz[0].vest_text, "komentar": niz[0].koment_text, "komentar_id": niz[0].koment_id})
             }
         });
         },
         obrisiKomentar() {
-             axios.post("http://localhost:3000/komentari_delete", {
+             axios.post("http://localhost:3000/komentari_delete", {//delete comments
                  kom_id: this.komid
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
                 }
-                if(res.data.data == "OK. Komentar je izbrisan!") {
+                if(res.data.data == "OK. Komentar je izbrisan!") {//"Ok. Comment is deleted!"
                     alert("OK. Komentar je izbrisan!");
                 }
                 this.$emit("changeK9");
