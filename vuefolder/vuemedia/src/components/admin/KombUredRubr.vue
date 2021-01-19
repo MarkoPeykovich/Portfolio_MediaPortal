@@ -50,10 +50,10 @@ export default {
     },
     methods: {
         getUrednike() {
-            axios.get("http://localhost:3000/urednici", {
+            axios.get("http://localhost:3000/urednici", {//get all the editors
 
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
@@ -62,30 +62,30 @@ export default {
             });
         },
         getRubrikeBez() {
-            axios.get("http://localhost:3000/ured_rubr", {
+            axios.get("http://localhost:3000/ured_rubr", {//get all the rubrics without editors
 
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     return;
                 }
                 this.sveRubrikeBez = res.data.data;
             });
         },
         poveziUrednikaIRubriku() {
-             axios.post("http://localhost:3000/ured_rubr", {
+             axios.post("http://localhost:3000/ured_rubr", {//send particular combination of editors(s) and rubric
                  ured_id: this.idurednika,
                  rubr_id: this.idrubrike
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
                 }
-                if(res.data.data == "ERROR, id urednika and id rubrike are required!") {
+                if(res.data.data == "ERROR, id urednika and id rubrike are required!") {//editor_id and rubric_id required
                     	alert("Greska, morate uneti i id urednika i id rubrike!");
                 }
                 if(res.data.data == "Rubrika vec ima urednika!") {
-                    	alert("Pogresan id rubrike! Ta rubrika vec ima urednika!");
+                    	alert("Pogresan id rubrike! Ta rubrika vec ima urednika!");//rubric already has an editor
                 }
                 this.$emit("changeK4");
                 this.currentRoute;
