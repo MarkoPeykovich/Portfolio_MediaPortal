@@ -41,10 +41,10 @@ export default {
     },
     methods: {
         getVesti() {
-            axios.get("http://localhost:3000/vesti", {
+            axios.get("http://localhost:3000/vesti", {//get all the news
 
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
@@ -53,15 +53,15 @@ export default {
             });
         },
         obrisiVest() {
-             axios.post("http://localhost:3000/vesti_delete", {
+             axios.post("http://localhost:3000/vesti_delete", {//delete chosen news
                  vest_id: this.vstid
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
                 }
-                if(res.data.data == "OK. Vest izbrisana!") {
+                if(res.data.data == "OK. Vest izbrisana!") {//"OK. The news is deleted!"
                     alert("OK. Vest izbrisana!");
                 }
                 this.$emit("changeK10");
