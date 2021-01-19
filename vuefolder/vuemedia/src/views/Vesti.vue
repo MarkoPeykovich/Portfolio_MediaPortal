@@ -103,11 +103,11 @@ export default {
     methods: {
       sendComment(id,text) {
         this.vid = id;
-        axios.post("http://localhost:3000/komentari", {
+        axios.post("http://localhost:3000/komentari", {//send comment
           vest_id: this.vid,
           text: this.message
         }).then((res) => {
-            if(res.data.data == "Morate se ulogovati!") {
+            if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
               this.$store.commit('doLogout');
               this.$router.replace('/');
               return;
@@ -140,9 +140,9 @@ export default {
     },
     mounted() {
 
-      //jquery code nize ($(document).on....) skida, tj. postavlja atribut hidden ->
-      //sa onih button-a, div elemenata  i textarea polja koja su kliknuta odnosno ->
-      //nisu kliknuta na button sa klasom 'text'
+      //jquery code below ($(document).on....) removes or puts attribute hidden ->
+      //from those buttons, divs and textarea fields which are clicked, i.e. ->
+      //not clicked via button with class 'text'
 
       $(document).on("click", ".text", function() {
        
@@ -167,54 +167,51 @@ export default {
         
       });
 
-      axios.get("http://localhost:3000/rubrike", {
+      axios.get("http://localhost:3000/rubrike", {//get all the rubrics of news
 
       }).then((res) => {
-           if(res.data.data == "Morate se ulogovati!") {
+           if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
               this.$store.commit('doLogout');
               this.$router.replace('/');
               return;
             }
-          //puni niz button-a (rubrike[]) postojecim rubrikama odakle se klikom ide ->
-          //na IzabranaRubrika gde se prikazuju vesti-komentari samo iz domena date rubrike
-            this.rubrike.push(res.data.data);
+            this.rubrike.push(res.data.data);//fill the array rubrike[] with all the existing rubrics/sections of news
       });
 
-      axios.get("http://localhost:3000/vesti_komentari", {
+      axios.get("http://localhost:3000/vesti_komentari", {//get news that have comments
 
       }).then((res) => {
 
-           if(res.data.data == "Morate se ulogovati!") {
+           if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
               return;
             }
-          //punimo niz0 kao bazni niz vesti sa komentarima (sa jednim ili vise komentara) 
-          var niz0 = [];
+           
+          var niz0 = [];//fill array niz0[] as a basic array of news which have at least one comment
 
-          if(res.data.data != "Nema nijedne vesti sa komentarom!") {
+          if(res.data.data != "Nema nijedne vesti sa komentarom!") {//"There are no news with comment(s)!"
             for(var i = 0; i<res.data.data.length; i++) {
               niz0.push(res.data.data[i].vest_id);
             }
           }
 
-          axios.get("http://localhost:3000/vesti", {
+          axios.get("http://localhost:3000/vesti", {//get all the news
 
           }).then((response) => {
 
-             if(res.data.data == "Morate se ulogovati!") {
+             if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
               return;
             }
 
-            //sve vesti (sa komentarima + bez komentara) ->
-            //pretvaramo u niz[] i sortiramo niz[] ->
-            //u skladu sa id svih vesti od najmanjeg id ka najvecem id
+            //all the news (with comments + without comments) ->
+            //we treat as an array niz[] and we sort it in an ascending order ->
+            //according to the news_id  
 
-            //var niz = JSON.parse(JSON.stringify(response.data.data));
             var niz = response.data.data;
             niz.sort((a,b) => a.vest_id - b.vest_id);
 
-            //ako vest nema komentar (ne nalazi se u niz0) ubaci je u ->
-            //vesti[], ako ima komentar (ima je u niz0) preskoci je (continue), ->
-            //a ako su sve vesti bez komentara, ubaci sve vesti (svaki niz[i]) u vesti[]
+            //if news is without comment (news is not inside niz0[]) push it inside ->
+            //the array vesti[], but if news has comment (news is inside niz0[]) neglect it (continue), ->
+            //and if all the news are without comments, push all the news (every single niz[i]) inside vesti[]
 
             for(var i = 0; i<niz.length; i++) {
                 if(niz0.length>0) {
@@ -231,25 +228,25 @@ export default {
                     this.vesti.push({"vest_naziv": niz[i].vest_naziv,"vest_id": niz[i].vest_id, "vest_text": niz[i].vest_text});
                   }
               }
-              //strana Vesti.vue sada prikazuje vesti bez komentara kao vesti[]
+              //the view Vesti.vue now shows news without comments as an array vesti[]
           });
 
-        //Vesti.vue osim vesti bez komentara (vesti[]) prikazuju jos dve celine: -> 
-        //vesti sa vise komentara (nizIstihId[]) i vesti sa jednim komentarom (nizRaznihId[])
+        //Vesti.vue except the news without comments (vesti[]) has two more parts: -> 
+        //news with multiple comments (nizIstihId[]) and news with one comment (nizRaznihId[])
 
-        if(res.data.data == "Nema nijedne vesti sa komentarom!") {
+        if(res.data.data == "Nema nijedne vesti sa komentarom!") {//"There are no news with comment(s)!"
           return;
         }
   
-        var niz = res.data.data;//ponovo skidamo sa vesti_komentari
-        var double = []; //double je niz od id vesti koje imaju vise komentara
+        var niz = res.data.data;//retrieve again from vesti_komentari (news_comments)
+        var double = []; //double is an array of all the news_id with multiple comments
 
         if(niz.length>1) {
 
         niz.sort((a,b) => a.vest_id - b.vest_id);
 
         for(var i = 0; i<niz.length-1; i++) {
-          var nizIJ = [];//nizIJ skuplja sve komentare na datu vest sem prvog komentara
+          var nizIJ = [];//array nizIJ collects all the comments of the respetive news (except the first comment inside niz[])
           if(niz[i].vest_id !== niz[i+1].vest_id) {continue;}
           double.push(niz[i].vest_id);
           for(var j = i+1; j<niz.length; j++) {
@@ -257,19 +254,19 @@ export default {
               nizIJ.push(niz[j].koment_text); 
             }
           }  
-          nizIJ.unshift(niz[i].koment_text);//dodaje prvi komentar date vesti na [0] od nizIJ
+          nizIJ.unshift(niz[i].koment_text);//put the first comment of the respective news to the nizIJ[0]
 
           var bool = this.nizIstihId.find(o => o.vest_naziv == niz[i].vest_naziv); 
           if(bool == undefined) {
-          //ukoliko naziv date vesti vec nije u nizu vesti sa vise komentara (nizIstihId[]), -> 
-          //dodaj takvu vest sa id,nazivom, textom vesti i nizom svih njenih komentara (nizIJ) u nizIstihId[]
+          //if the headline of the respective news is not already present in the news array with multiple comments nizIstihId[], -> 
+          //push such news with its id, headline, text and array of all its comments nizIJ[] inside nizIstihId[]
             this.nizIstihId.push({"vest_naziv": niz[i].vest_naziv, "vest_id": niz[i].vest_id, "vest_text": niz[i].vest_text, "komentari": nizIJ});
           }
         }
 
-        //ukoliko vest nema id u double[] i razlicita je od ->
-        //prve vesti niza (niz[i(=0 zbog break kasnije u petlji)].vest_id), ->
-        //tj. ako ima jedan komentar, dodaj je u nizRaznihId[] 
+        //if the news is without id inside double[] and is different from ->
+        //the first news of the array (niz[i=0 because of break later in the loop].vest_id), ->
+        //i.e. if the news has only one comment, push it inside nizRaznihId[]  
           for(var i = 0; i<niz.length-1; i++) { 
             for(var j = i+1; j<niz.length; j++) {
               if(niz[i].vest_id != niz[j].vest_id) {
@@ -278,13 +275,13 @@ export default {
                 }
               }
             }
-              if(double.indexOf(niz[i].vest_id) == -1) {//dodaj prvu vest niza u nizRaznihId[], ako nema id u double[]
+              if(double.indexOf(niz[i].vest_id) == -1) {//push the first news of the array niz[] inside nizRaznihId[], if id of such news is not inside double[]
                 this.nizRaznihId.unshift({"vest_naziv": niz[i].vest_naziv, "vest_id": niz[i].vest_id, "vest_text": niz[i].vest_text, "komentar": niz[i].koment_text});
               }
               break;
           }
         } 
-        //ako vesti_komentari daju samo jednu vest (niz.length==1), stavi tu vest u nizRaznihId[]
+        //if we retrieve from vesti_komentari only one news (niz.length==1), push such news inside nizRaznihId[0]
         if(niz.length==1) {
           this.nizRaznihId.push({"vest_naziv": niz[0].vest_naziv, "vest_id": niz[0].vest_id, "vest_text": niz[0].vest_text, "komentar": niz[0].koment_text})
         }
