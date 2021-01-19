@@ -36,10 +36,10 @@ export default {
     },
     methods: {
         getUrednike() {
-            axios.get("http://localhost:3000/urednici", {
+            axios.get("http://localhost:3000/urednici", {//get all the editors
 
             }).then((res) => {
-                 if(res.data.data == "Morate se ulogovati!") {
+                 if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
@@ -48,15 +48,15 @@ export default {
             });
         },
         obrisiUrednika() {
-             axios.post("http://localhost:3000/urednici_delete", {
+             axios.post("http://localhost:3000/urednici_delete", {//delete chosen editor
                  ured_id: this.urid
             }).then((res) => {
-                 if(res.data.data == "Morate se ulogovati!") {
+                 if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
                 }
-                if(res.data.data == "OK. Urednik izbrisan!") {
+                if(res.data.data == "OK. Urednik izbrisan!") {//"OK. The editor is deleted!"
                     alert("OK. Urednik izbrisan!");
                 }
                 this.$emit("changeK7");
