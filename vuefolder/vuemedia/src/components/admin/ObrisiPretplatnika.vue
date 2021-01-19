@@ -41,10 +41,10 @@ export default {
     },
     methods: {
         getPretplatnike() {
-            axios.get("http://localhost:3000/pretplatnici", {
+            axios.get("http://localhost:3000/pretplatnici", {//get all the subscribers
 
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
@@ -53,15 +53,15 @@ export default {
             });
         },
         obrisiPretplatnika() {
-             axios.post("http://localhost:3000/pretplatnici_delete", {
+             axios.post("http://localhost:3000/pretplatnici_delete", {//delete chosen subscriber
                  pretpl_id: this.pretplid
             }).then((res) => {
-                if(res.data.data == "Morate se ulogovati!") {
+                if(res.data.data == "Morate se ulogovati!") {// "You must be logged in!"
                     this.$store.commit('doLogout');
                     this.$router.replace('/');
                     return;
                 }
-                if(res.data.data == "OK. Pretplatnik je izbrisan!") {
+                if(res.data.data == "OK. Pretplatnik je izbrisan!") {//"OK. The subscriber is deleted!"
                     alert("OK. Pretplatnik je izbrisan!");
                 }
                 this.$emit("changeK8");
